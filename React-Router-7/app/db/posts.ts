@@ -9,7 +9,11 @@ export const getPosts = () => {
 };
 
 export const getPostById = (id: number) => {
-  return BLOG_POSTS.find((post) => post.id === id);
+  const findedPost = BLOG_POSTS.find((post) => post.id === id);
+  if (!findedPost) {
+    throw new Error("Post not found");
+  }
+  return findedPost;
 };
 
 export const createPost = (post: { title: string; description: string }) => {
