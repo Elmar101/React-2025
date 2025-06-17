@@ -1,87 +1,136 @@
 # Welcome to React Router!
 
-A modern, production-ready template for building full-stack React applications using React Router.
+# if you want to client render then use this clientLoader instead of loader (posts and post-details pages and react-router-config.js -> ssr: false)
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+# ssr
 
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+=> react-router-config.js
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+import type { Config } from "@react-router/dev/config";
+
+export default {
+  ssr: true,
+} satisfies Config;
 ```
 
-## Styling
+=> app/routes/posts.tsx
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+```
+import { getPosts } from "~/db/posts";
+import type { Route } from "./+types/posts";
+import { Link, Outlet } from "react-router";
 
----
+export const loader = () => {
+  return getPosts();
+};
 
-Built with ❤️ using React Router.
+export default function Posts({ loaderData }: Route.ComponentProps) {
+  return (
+    <>
+      <h1>Posts</h1>
+      <ul>
+        {loaderData?.map?.((post) => (
+          <li
+            key={post.id}
+            className="mb-4 bg-gray-800 rounded border border-gray-700 p-4 text-white"
+          >
+            <h2>{post.title}</h2>
+            <p>{<Outlet />}</p>
+            <p>
+              <Link to={`/posts/${post.id}`}> Read Post Detail</Link>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+```
+
+# csr
+
+=> react-router-config.js
+
+```
+import type { Config } from "@react-router/dev/config";
+
+export default {
+  ssr: false,
+} satisfies Config;
+```
+
+=> app/routes/posts.tsx
+
+```
+import { getPosts } from "~/db/posts";
+import type { Route } from "./+types/posts";
+import { Link, Outlet } from "react-router";
+
+export const loader = () => {
+  return getPosts();
+};
+
+export default function Posts({ loaderData }: Route.ComponentProps) {
+  return (
+    <>
+      <h1>Posts</h1>
+      <ul>
+        {loaderData?.map?.((post) => (
+          <li
+            key={post.id}
+            className="mb-4 bg-gray-800 rounded border border-gray-700 p-4 text-white"
+          >
+            <h2>{post.title}</h2>
+            <p>{<Outlet />}</p>
+            <p>
+              <Link to={`/posts/${post.id}`}> Read Post Detail</Link>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+```
+
+# Nested Routes
+
+import {
+type RouteConfig,
+index,
+layout,
+prefix,
+route,
+} from "@react-router/dev/routes";
+
+export default [
+index("routes/home.tsx"),
+route("about", "routes/about.tsx"),
+layout("components/posts-layout.tsx", [
+...prefix("posts", [
+route("", "routes/posts.tsx", [
+route(":postId", "routes/post-details.tsx"),
+]),
+route("new-post", "routes/new-post.tsx"),
+]),
+]),
+] satisfies RouteConfig;
+
+after use <Outlet/>
+
+# Static Pre-render (Next Js deki SSG) build time create static html files
+
+=> react-router.config.ts
+
+```
+import type { Config } from "@react-router/dev/config";
+
+export default {
+  // return a list of URLs to prerender at build time
+  async prerender() {
+    return ["/", "/about", "/contact"];
+  },
+} satisfies Config;
+
+```

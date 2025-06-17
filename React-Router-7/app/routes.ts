@@ -11,8 +11,9 @@ export default [
   route("about", "routes/about.tsx"),
   layout("components/posts-layout.tsx", [
     ...prefix("posts", [
-      route("", "routes/posts.tsx"),
-      route(":postId", "routes/post-details.tsx"),
+      route("", "routes/posts.tsx", [
+        route(":postId", "routes/post-details.tsx"),
+      ]),
       route("new-post", "routes/new-post.tsx"),
     ]),
   ]),

@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, NavLink, Outlet } from "react-router";
 
 export default function PostsLayout({
   children,
@@ -10,8 +10,24 @@ export default function PostsLayout({
       <header className="bg-gray-800 p-8 text-white">
         Blog Post
         <nav className="flex gap-2">
-          <Link to="/posts">Posts</Link>
-          <Link to="/posts/new-post">New Post</Link>
+          <NavLink
+            to="/posts"
+            className={({ isActive }) =>
+              isActive ? "text-indigo-200" : "text-white"
+            }
+            end
+          >
+            Posts
+          </NavLink>
+          <Link
+            to="/posts/new-post"
+            // className={({ isActive }) =>
+            //   isActive ? "text-indigo-200" : "text-white"
+            // }
+            // end
+          >
+            New Post
+          </Link>
         </nav>
       </header>
       <main className="p-8">

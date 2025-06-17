@@ -16,10 +16,9 @@ const PostDetails = ({ loaderData }: Route.ComponentProps) => {
   if (!loaderData) {
     return <div>Post not found</div>;
   }
-  const { title, description } = loaderData;
+  const { description } = loaderData;
   return (
     <div>
-      <h1>{title}</h1>
       <p>{description}</p>
     </div>
   );
