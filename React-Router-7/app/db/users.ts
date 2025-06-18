@@ -41,3 +41,11 @@ export const getUserById = async (userId: string): Promise<IUser> => {
   const user = (await response.json()) as IUser;
   return user;
 };
+
+export const deleteUserById = async (userId: string): Promise<string> => {
+  const response = await fetch(`${BASE_URL}/users/delete/${userId}`, {
+    method: "DELETE",
+  });
+  const user = (await response.json()) as IUser;
+  return `${user.name} deleted successfully`;
+};

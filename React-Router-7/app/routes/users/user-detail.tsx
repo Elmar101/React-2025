@@ -1,5 +1,6 @@
 import { getUserById } from "~/db/users";
 import type { Route } from "./+types/user-detail";
+import { Link } from "react-router";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { userId } = params;
@@ -28,6 +29,7 @@ export default function UserDetail({ loaderData }: Route.ComponentProps) {
       <p>{loaderData?.company.catchPhrase}</p>
       <p>{loaderData?.company.bs}</p>
       <p>{loaderData?.address.geo.lat}</p>
+      <Link to={`/users`}>BACK...</Link>
     </div>
   );
 }
