@@ -12,15 +12,10 @@ export function loader({ params }: Route.LoaderArgs) {
   }
 }
 
-const PostDetails = ({ loaderData }: Route.ComponentProps) => {
+export function PostDetails({ loaderData }: Route.ComponentProps) {
   if (!loaderData) {
     return <div>Post not found</div>;
   }
   const { description } = loaderData;
-  return (
-    <div>
-      <p>{description}</p>
-    </div>
-  );
-};
-export default PostDetails;
+  return <div>{description}</div>;
+}

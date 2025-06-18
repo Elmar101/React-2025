@@ -1,7 +1,6 @@
 import { Form, redirect, useNavigate, useSubmit } from "react-router";
-import type { Route } from "./+types/new-post";
 import { createPost } from "~/db/posts";
-import { error } from "console";
+import type { Route } from "./+types/new-post";
 
 export const action = async ({ request }: Route.ActionArgs) => {
   // code for creating a new post
@@ -23,20 +22,20 @@ export const action = async ({ request }: Route.ActionArgs) => {
 export default function NewPost({ actionData }: Route.ComponentProps) {
   const { error } = actionData ?? {};
 
-  // Client Side submit action
+  // Client Side submit action use html form submit
   const navigate = useNavigate();
   const submit = useSubmit();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await submit(e.currentTarget, { method: "POST" });
-    // navigate("/posts");
+    navigate("/posts");
   };
 
   return (
     <>
       <h1>New Post</h1>
-      {/* <Form method="POST" className="max-w-[30rem]"> */}
-      <form onSubmit={handleSubmit} className="max-w-[30rem]">
+      <Form method="POST" className="max-w-[30rem]">
+        {/* <form onSubmit={handleSubmit} className="max-w-[30rem]"> */}
         <div className="flex flex-col gap-1">
           <label htmlFor="title">Title</label>
           <input
@@ -61,8 +60,8 @@ export default function NewPost({ actionData }: Route.ComponentProps) {
         >
           Create
         </button>
-      </form>
-      {/* </Form> */}
+        {/* </form> */}
+      </Form>
     </>
   );
 }
